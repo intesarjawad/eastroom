@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>East Room</title>
+<link rel="stylesheet" href="pages.css">
+<main id="stage" tabindex="0" aria-label="The page">
+  <div id="sheet"><img id="left" alt=""><img id="right" alt="" hidden><i id="lit" hidden></i></div>
+</main>
+<header id="hud"><a id="lib" href="./">Library</a><b id="name"></b><span id="part"></span></header>
+<footer id="deck">
+  <button id="prev" aria-label="Back (left arrow)">←</button>
+  <output id="count" aria-live="polite"></output>
+  <button id="next" aria-label="On (right arrow or Space)">→</button>
+  <nav id="ruler" aria-label="The book, part by part"></nav>
+  <button id="guide" aria-pressed="true">Panels</button>
+  <button id="pair" aria-pressed="false">Two pages</button>
+</footer>
+<p id="say" role="status" hidden></p>
+<script type="module" src="pages.js"></script>
+</html>

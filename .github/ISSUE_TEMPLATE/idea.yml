@@ -1,0 +1,12 @@
+name: Idea
+description: Something that would help you finish more books
+labels: [idea]
+body:
+  - type: textarea
+    attributes:
+      label: What gets in the way of your reading today?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What would help?

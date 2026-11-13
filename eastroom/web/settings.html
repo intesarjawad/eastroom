@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#120a08">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Settings · East Room</title>
+<link rel="stylesheet" href="reader.css">
+<link rel="stylesheet" href="rooms.css">
+<link rel="stylesheet" href="settings.css">
+<nav id="rail" aria-label="Settings">
+  <a href="./" class="back">Library</a>
+  <h1 class="sr">Settings</h1>
+  <div id="rooms" role="tablist" aria-label="Rooms of the settings"></div>
+  <small id="about"></small>
+</nav>
+<main id="room" tabindex="-1"></main>
+<p id="say" role="status" aria-live="polite" hidden></p>
+<script type="module" src="settings.js"></script>
+</html>

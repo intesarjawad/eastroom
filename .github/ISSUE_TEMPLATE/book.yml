@@ -1,0 +1,16 @@
+name: Book imports badly
+description: Chapters merged, titles missing, text lost or out of order
+labels: [importer]
+body:
+  - type: input
+    attributes:
+      label: Where is the book from?
+      description: A link to a public-domain copy that shows the problem is ideal. Please do not attach copyrighted books.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What went wrong?
+      placeholder: "The whole book arrives as 5 chapters called Section 1 to 5."
+    validations:
+      required: true

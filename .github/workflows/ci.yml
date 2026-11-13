@@ -1,0 +1,88 @@
+name: Checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: 0.13.8
+          python-version: '3.13'
+      - run: uv sync --locked
+      - run: uv lock --check
+      - run: make check
+      - run: uv build
+  # The package has no dependencies, so it is tested bare on the oldest and newest Python it claims.
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: 0.13.8
+          python-version: ${{ matrix.python }}
+      - run: uv run --no-project python -m unittest discover -s tests -t .
+      - name: Read a book and export the static site
+        run: uv run --no-project python -m eastroom samples/meditations.epub --library lib --export site
+  # The one-line installers, run as a newcomer runs them, on a machine without uv. They install this
+  # commit instead of the published one, make the icon, and take everything away again.
+  install:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      EASTROOM_NO_OPEN: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install, use and remove (macOS, Linux)
+        if: runner.os != 'Windows'
+        run: |
+          EASTROOM_SOURCE="file://$PWD" sh install.sh
+          export PATH="$HOME/.local/bin:$PATH"
+          eastroom samples/meditations.epub --library lib --export site
+          test -f site/index.html
+          if [ "$RUNNER_OS" = macOS ]; then
+            test -x "$HOME/Applications/East Room.app/Contents/MacOS/East Room"
+            test -s "$HOME/Applications/East Room.app/Contents/Resources/East Room.icns"
+          else
+            test -f "$HOME/.local/share/applications/eastroom.desktop"
+          fi
+          sh install.sh --uninstall
+          [ ! -e "$HOME/.local/bin/eastroom" ]
+          [ ! -e "$HOME/Applications/East Room.app" ]
+      - name: Install, use and remove (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $env:EASTROOM_SOURCE = ([uri]$PWD.Path).AbsoluteUri
+          ./install.ps1
+          $env:Path = "$HOME\.local\bin;$env:Path"
+          eastroom samples/meditations.epub --library lib --export site
+          if ($LASTEXITCODE -ne 0 -or -not (Test-Path site/index.html)) { throw 'eastroom did not run' }
+          $entry = Join-Path ([Environment]::GetFolderPath('Programs')) 'East Room.lnk'
+          if (-not (Test-Path $entry)) { throw 'no Start menu entry' }
+          $env:EASTROOM_UNINSTALL = 1
+          ./install.ps1
+          if (Test-Path $entry) { throw 'the Start menu entry is still there' }
+          if (Test-Path "$HOME\.local\bin\eastroom.exe") { throw 'eastroom is still there' }

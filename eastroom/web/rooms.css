@@ -1,0 +1,99 @@
+/* The rooms beside the library: settings and ideas. Plain pages that scroll, before the same dark walnut as the library's case and in its cream and gold. Type comes from reader.css. */
+:root { --ink: #efe3c8; --accent: #d9b56c; --deep: #170e0a; --ground: #2b1a12; }
+html, body { height: auto; overflow: visible; }
+html { scrollbar-color: color-mix(in oklab, var(--ink) 24%, transparent) transparent; }   /* a scrollbar, where one shows, is of the room's colours */
+body { min-height: 100vh; background: linear-gradient(#130b08eb, #130b08eb), url(room/walnut.webp) 0 0 / 760px #130b08; color: var(--ink); font: 450 16px/1.5 var(--sg); font-stretch: 100%; --side: max(22px, calc((100vw - 1080px) / 2)); }
+a { color: inherit; }
+button, select, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; padding: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.k { font: 650 11.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
+
+#top { position: sticky; top: 0; z-index: 5; padding: 22px var(--side) 0; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 6px 20px;
+  background: linear-gradient(color-mix(in oklab, var(--deep) 82%, #000) 86%, #0000); border-bottom: 18px solid #0000; background-clip: border-box; }
+#top h1 { grid-column: 1; margin: 0; font: 800 54px/.86 var(--sg); font-stretch: 50%; text-transform: uppercase; }
+.back { grid-column: 1; justify-self: start; text-decoration: none; font: 650 11.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; opacity: .7; padding: 8px 0; }
+.back::before { content: '← '; }
+.back:hover { opacity: 1; }
+#rooms { grid-column: 1 / -1; display: flex; gap: 4px; margin-top: 14px; padding: 5px; border-radius: 26px; background: color-mix(in oklab, var(--ink) 9%, transparent); width: fit-content; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+#rooms button, .pill { height: 40px; padding: 0 18px; border-radius: 20px; white-space: nowrap; font: 700 12px/1 var(--sg); font-stretch: 112%; letter-spacing: .08em; text-transform: uppercase; color: color-mix(in oklab, var(--ink) 72%, transparent); transition: background .15s, color .15s; }
+#rooms button:hover { color: var(--ink); }
+#rooms button[aria-selected=true] { background: var(--ink); color: var(--deep); }
+#room { padding: 26px var(--side) 120px; outline: 0; }
+
+section.box { margin: 0 0 34px; }
+section.box > h2 { margin: 0 0 4px; font: 800 30px/1 var(--sg); font-stretch: 62%; text-transform: uppercase; }
+section.box > p.why { margin: 0 0 16px; max-width: 62ch; color: color-mix(in oklab, var(--ink) 66%, transparent); font-size: 15px; }
+.rows { border-top: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: center; padding: 14px 0; border-bottom: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); }
+.row b { font-weight: 650; }
+.row small { grid-column: 1; color: color-mix(in oklab, var(--ink) 62%, transparent); font-size: 14px; line-height: 1.4; }
+.row > :is(button, select, input, .pick, .acts, output) { grid-column: 2; grid-row: 1 / span 2; }
+.row.bad small { color: #ffb4a8; }
+.pill { background: color-mix(in oklab, var(--ink) 12%, transparent); color: var(--ink); }
+.pill:hover { background: color-mix(in oklab, var(--ink) 20%, transparent); }
+.pill.go { background: var(--ink); color: var(--deep); }
+.pill.warn { box-shadow: inset 0 0 0 1.5px #ff9d8e; color: #ffc2b8; background: none; }
+.pill[disabled] { opacity: .4; cursor: default; }
+.acts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+select, input[type=text], input[type=url], textarea { height: 40px; padding: 0 14px; border-radius: 12px; border: 0; background: color-mix(in oklab, var(--ink) 12%, transparent); min-width: 0; }
+select { padding-right: 30px; }
+textarea { height: auto; padding: 10px 14px; width: 100%; box-sizing: border-box; resize: vertical; line-height: 1.45; }
+input[type=range] { width: min(240px, 40vw); accent-color: var(--accent); }
+.pick { display: inline-flex; padding: 4px; border-radius: 22px; background: color-mix(in oklab, var(--ink) 10%, transparent); }
+.pick button { height: 34px; padding: 0 15px; border-radius: 17px; font: 700 11.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .08em; text-transform: uppercase; color: color-mix(in oklab, var(--ink) 70%, transparent); }
+.pick button[aria-pressed=true] { background: var(--ink); color: var(--deep); }
+code { font: 500 13.5px/1.4 ui-monospace, Menlo, monospace; padding: 2px 7px; border-radius: 6px; background: color-mix(in oklab, var(--ink) 12%, transparent); user-select: all; overflow-wrap: anywhere; }
+
+/* work under way: one line each, with how far it has come */
+.job { position: relative; overflow: hidden; }
+.job::after { content: ''; position: absolute; left: 0; bottom: -1px; height: 2px; width: calc(var(--p, 0) * 100%); background: var(--accent); transition: width .6s; }
+.job.run b::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--accent); }
+
+/* every book and what it has */
+.find { width: min(360px, 100%); margin: 0 0 12px; }
+.bk { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr) auto; gap: 6px 18px; align-items: center; padding: 12px 0; border-bottom: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); }
+.bk .name { min-width: 0; }
+.bk .name b { display: block; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bk .name small { color: color-mix(in oklab, var(--ink) 60%, transparent); font-size: 13.5px; }
+.has { display: flex; flex-wrap: wrap; gap: 6px; }
+.has span { padding: 5px 10px; border-radius: 9px; font-size: 12.5px; line-height: 1.2; background: color-mix(in oklab, var(--ink) 9%, transparent); color: color-mix(in oklab, var(--ink) 62%, transparent); white-space: nowrap; }
+.has span.on { color: var(--ink); background: color-mix(in oklab, var(--accent) 24%, transparent); }
+.has span.bad { color: #ffc2b8; box-shadow: inset 0 0 0 1px #ff9d8e88; }
+.has span.old { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 70%, transparent); }
+.bk .more { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 0 4px; }
+.bk .more p { flex-basis: 100%; margin: 0 0 4px; font-size: 14px; color: #ffc2b8; }
+.bar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: color-mix(in oklab, var(--ink) 10%, transparent); margin: 10px 0 8px; }
+.bar i { display: block; min-width: 2px; background: var(--accent); opacity: calc(1 - var(--n) * .2); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 14px; color: color-mix(in oklab, var(--ink) 70%, transparent); margin: 0 0 6px; padding: 0; list-style: none; }
+.legend li::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 7px; background: var(--accent); opacity: calc(1 - var(--n) * .2); }
+.big { font: 800 62px/.9 var(--sg); font-stretch: 50%; font-variant-numeric: tabular-nums; }
+.big span { font: 650 12.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; opacity: .75; margin-left: 10px; }
+.empty { padding: 26px 0; color: color-mix(in oklab, var(--ink) 60%, transparent); }
+#say { position: fixed; left: 50%; bottom: 26px; translate: -50% 0; z-index: 9; margin: 0; max-width: min(560px, calc(100vw - 32px)); padding: 13px 20px; border-radius: 16px; background: var(--ink); color: var(--deep); font-weight: 600; box-shadow: 0 12px 40px #0008; }
+
+/* ---- ideas: every line you kept ---- */
+.idea-book { margin: 0 0 40px; }
+.idea-book > h2 { margin: 0; font: 800 34px/1 var(--sg); font-stretch: 58%; text-transform: uppercase; }
+.idea-book > p { margin: 2px 0 14px; color: color-mix(in oklab, var(--ink) 62%, transparent); font-size: 14.5px; }
+.idea { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; padding: 16px 0; border-top: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); }
+.idea blockquote { margin: 0; font: 400 21px/1.5 Literata, Georgia, serif; text-wrap: pretty; }
+.idea .where { grid-column: 1; font-size: 13px; color: color-mix(in oklab, var(--ink) 58%, transparent); }
+.idea .note { grid-column: 1; }
+.idea .note textarea { background: none; box-shadow: inset 2px 0 0 var(--accent); border-radius: 0; padding: 4px 0 4px 14px; font: 450 15.5px/1.5 var(--sg); }
+.idea .note textarea::placeholder { color: color-mix(in oklab, var(--ink) 44%, transparent); }
+.idea .acts { grid-column: 2; grid-row: 1 / span 3; align-content: start; }
+.idea mark { background: color-mix(in oklab, var(--accent) 34%, transparent); color: inherit; border-radius: 3px; }
+
+@media (max-width: 700px) {
+  #top h1 { font-size: 40px; }
+  .row { grid-template-columns: 1fr; } .row > :is(button, select, input, .pick, .acts, output) { grid-column: 1; grid-row: auto; justify-self: start; }
+  .acts { justify-content: flex-start; }
+  .bk { grid-template-columns: 1fr; } .bk > .pill { justify-self: start; }
+  .idea { grid-template-columns: 1fr; } .idea .acts { grid-column: 1; grid-row: auto; }
+  .idea blockquote { font-size: 18.5px; }
+  #rooms:has(.find) { flex-wrap: wrap; width: auto; border-radius: 22px; } #rooms .find { flex: 1 1 100%; width: auto; }   /* the search keeps a whole row to itself */
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+#rooms .find { height: 40px; width: min(340px, 56vw); border-radius: 20px; background: none; }

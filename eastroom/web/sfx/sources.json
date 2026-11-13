@@ -1,0 +1,74 @@
+{
+ "go": {
+  "what": "one quick page flick of an antique book",
+  "source": "sonniss/344 Audio - Antique Books/PAPRMisc_Antique Books Slow Page Turns 6_344 Audio_Antiques - Books.wav",
+  "cut": [
+   8.812,
+   9.2
+  ],
+  "licence": "Sonniss GameAudioGDC bundle licence"
+ },
+ "stop": {
+  "what": "one soft pat on cloth",
+  "source": "sonniss/InMotionAudio - Foley T-Shirt/FOLYClth_SinglePats04_InMotionAudio_FoleyT-Shirt.wav",
+  "cut": [
+   0,
+   0.45
+  ],
+  "licence": "Sonniss GameAudioGDC bundle licence"
+ },
+ "key": {
+  "what": "one music-box note",
+  "source": "sonniss/Sonic Bat - Music Boxes/SBmb_Music Box A 013.wav",
+  "cut": [
+   0.047,
+   1.3
+  ],
+  "licence": "Sonniss GameAudioGDC bundle licence"
+ },
+ "tick": {
+  "what": "one detent of a vintage radio selector wheel",
+  "source": "sonniss/Sonic Bat - Vintage Radio/SBvr_Mode Select Wheel 006.wav",
+  "cut": [
+   0.016,
+   0.12
+  ],
+  "licence": "Sonniss GameAudioGDC bundle licence"
+ },
+ "part": {
+  "what": "one page of an antique book turned",
+  "source": "sonniss/344 Audio - Antique Books/PAPRMisc_Antique Books Slow Page Turns 6_344 Audio_Antiques - Books.wav",
+  "cut": [
+   5.99,
+   7.3
+  ],
+  "licence": "Sonniss GameAudioGDC bundle licence"
+ },
+ "book": {
+  "what": "antique book pages flicked through",
+  "source": "sonniss/344 Audio - Antique Books/PAPRMisc_Antique Books Flicking Through Pages 11_344 Audio_Antiques - Books.wav",
+  "cut": [
+   0.1,
+   1.03
+  ],
+  "licence": "Sonniss GameAudioGDC bundle licence"
+ },
+ "turn": {
+  "what": "a card slid on a table",
+  "source": "kenney/casino-audio/Audio/card-slide-1.ogg",
+  "cut": [
+   0,
+   0.4
+  ],
+  "licence": "Kenney, CC0"
+ },
+ "open": {
+  "what": "an encyclopedia page turned",
+  "source": "sonniss/Cinematic Sound Design - Paper Foley/Encyclopedia Glossy Page Turn Muted.wav",
+  "cut": [
+   0,
+   0.549
+  ],
+  "licence": "Sonniss GameAudioGDC bundle licence"
+ }
+}

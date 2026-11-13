@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: If you use East Room, please cite it as below.
+title: "East Room: read whole books in the author's own words, paced for a restless mind"
+type: software
+authors:
+  - family-names: Jawad
+    given-names: Intesar
+version: 0.3.0
+license: MIT
+repository-code: "https://github.com/intesarjawad/eastroom"
+abstract: >-
+  East Room takes a book file (EPUB, PDF, comic archive or plain text) and walks the reader through
+  every word of it: a highlighter moves at a chosen pace, the book is cut into short parts where
+  its author cut it, and the place is kept across devices. It runs on the reader's own computer.
+keywords:
+  - reading
+  - EPUB
+  - ADHD
+  - accessibility
+  - local-first

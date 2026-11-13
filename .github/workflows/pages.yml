@@ -1,0 +1,69 @@
+name: Pages
+# The demo: the 17 public-domain books of the README's pictures (16 Standard Ebooks editions and the Meditations kept in
+# samples/), read by this commit and exported as a static site. The last one read stands on the slab, and has its
+# pictures from Wikimedia Commons. Every author and translator here died more than 70 years ago, so the texts are free
+# to read where copyright runs for the author's life and 70 years, as well as in the USA.
+# A visitor can add their own files: their browser reads them with East Room's Python, which runs there on Pyodide. The
+# runtime is fetched at a pinned version, checked against a hash and served with the site (tools/demo_runtime.py).
+# Started by hand until the site's address is set up.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: 0.13.8
+          python-version: '3.13'
+      - name: Fetch the books and export the site
+        run: |
+          mkdir books
+          n=10
+          for book in \
+            friedrich-nietzsche_beyond-good-and-evil_helen-zimmern charles-darwin_the-origin-of-species \
+            henry-david-thoreau_walden h-g-wells_the-time-machine meditations \
+            fyodor-dostoevsky_crime-and-punishment_constance-garnett niccolo-machiavelli_the-prince_w-k-marriott \
+            herman-melville_moby-dick oscar-wilde_the-picture-of-dorian-gray bram-stoker_dracula \
+            arthur-conan-doyle_the-adventures-of-sherlock-holmes alexandre-dumas_the-count-of-monte-cristo_chapman-and-hall \
+            lewis-carroll_alices-adventures-in-wonderland_john-tenniel \
+            jane-austen_pride-and-prejudice mary-shelley_frankenstein f-scott-fitzgerald_the-great-gatsby \
+            homer_the-odyssey_william-cullen-bryant; do
+            n=$((n + 1))
+            if [ "$book" = meditations ]; then cp samples/meditations.epub "books/$n-$book.epub"; continue; fi
+            curl -sSfL -o "books/$n-$book.epub" "https://standardebooks.org/ebooks/$(echo "$book" | tr _ /)/downloads/$book.epub?source=download"
+            sleep 1
+          done
+          uv run --no-project python -m eastroom books/*.epub --library lib --export site
+      # The Odyssey gets its pictures by the workshop's own step, from a kept list of names in place of a model.
+      - name: Find the pictures and export again
+        run: |
+          uv run --no-project --with pillow python tools/demo_pictures.py lib
+          uv run --no-project python -m eastroom --library lib --export site
+      - name: Add the runtime that reads a visitor's own files in their browser
+        run: uv run --no-project python tools/demo_runtime.py site
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

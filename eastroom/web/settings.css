@@ -1,0 +1,135 @@
+/* Settings: you change a thing by holding the thing. The rooms stand as words on the left; each room is panels on the book's own ground. Loaded after rooms.css. */
+body { display: grid; grid-template-columns: 236px minmax(0, 1fr); --panel: color-mix(in oklab, var(--deep) 58%, var(--ground)); --soft: color-mix(in oklab, var(--ink) 8%, transparent); --line: color-mix(in oklab, var(--ink) 14%, transparent); --glide: cubic-bezier(.32, .72, 0, 1); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+#rail { position: sticky; top: 0; height: 100vh; padding: 30px 0 28px 30px; display: flex; flex-direction: column; }
+#rail .back { margin-bottom: 26px; }
+#rooms { display: flex; flex-direction: column; gap: 3px; margin: 0; padding: 0; background: none; border-radius: 0; width: auto; overflow: visible; }
+#rooms button { height: auto; padding: 0; border-radius: 4px; text-align: left; font: 800 38px/.96 var(--sg); font-stretch: 50%; letter-spacing: 0; text-transform: uppercase; color: var(--ink); opacity: .46; transition: opacity .2s, translate .35s var(--out); }
+#rooms button:hover { opacity: .8; }
+#rooms button[aria-selected=true] { background: none; color: var(--ink); opacity: 1; translate: 7px 0; }
+#about { margin-top: auto; max-width: 19ch; font-size: 13px; line-height: 1.45; color: color-mix(in oklab, var(--ink) 62%, transparent); }
+#room { padding: 30px 34px 90px 26px; max-width: 1220px; min-width: 0; }
+
+/* panels and what stands in them */
+section.box { margin: 0 0 16px; padding: 28px 32px 12px; border-radius: 26px; background: var(--panel); }
+section.box > h2 { font-size: 28px; } section.box > p.why { margin-bottom: 14px; }
+.rows { border-top-color: var(--line); } .row, .bk { border-bottom-color: var(--line); }
+.rows > :last-child { border-bottom: 0; }
+.acts { align-items: center; }
+.row > .steps { grid-column: 1 / -1; grid-row: auto; margin: 4px 0 2px; padding-left: 22px; font-size: 14.5px; line-height: 1.75; color: color-mix(in oklab, var(--ink) 80%, transparent); } .steps li { padding-left: 4px; } .steps code { white-space: nowrap; }
+.pill { background: var(--soft); transition: background .15s, color .15s, scale .16s var(--out), opacity .2s; } .pill:active:not([disabled]) { scale: .95; }
+/* one of a few: the thumb travels, the words stay */
+.pick { background: var(--soft); position: relative; display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.pick::before { content: ''; position: absolute; left: 4px; top: 4px; bottom: 4px; width: calc((100% - 8px) / var(--n)); border-radius: 17px; background: var(--ink); translate: calc(var(--i) * 100%) 0; transition: translate .38s var(--glide); }
+.pick button, .pick button[aria-pressed=true] { position: relative; background: none; transition: color .22s; }
+select, input[type=text], input[type=url], input[type=password], textarea { background: var(--soft); height: 40px; padding: 0 14px; border-radius: 12px; border: 0; min-width: 0; }
+input::placeholder { color: color-mix(in oklab, var(--ink) 46%, transparent); }
+/* on or off: a lamp that is lit or not */
+.lamp { position: relative; width: 58px; height: 34px; border-radius: 17px; background: var(--soft); transition: background .2s; }
+.lamp::after { content: ''; position: absolute; left: 5px; top: 5px; width: 24px; height: 24px; border-radius: 50%; box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--ink) 46%, transparent); transition: translate .38s var(--glide), scale .16s var(--out), background .2s, box-shadow .2s; }
+.lamp:active::after { scale: .86; }
+.lamp[aria-pressed=true] { background: color-mix(in oklab, var(--accent) 24%, transparent); }
+.lamp[aria-pressed=true]::after { translate: 24px 0; background: var(--accent); box-shadow: 0 0 18px color-mix(in oklab, var(--accent) 60%, transparent); }
+
+/* ---- Reading: the page itself is held and changed ---- */
+#desk { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: stretch; min-height: min(calc(100vh - 60px), 780px); }
+#leaf { position: relative; border-radius: 26px; background: radial-gradient(120% 90% at 18% 0%, color-mix(in oklab, var(--panel) 86%, var(--accent) 7%), var(--panel)); padding: 40px 54px 0 104px; display: flex; flex-direction: column; overflow: hidden; }
+#leaf > .k { margin-bottom: 20px; }
+#lines { position: relative; margin: 0 0 0 -8px; padding: 2px 0 0 8px; font: 400 calc(26px * var(--scale))/1.65 Literata, Georgia, serif; max-width: 710px; flex: 1 1 0; min-height: 150px; overflow: hidden; mask: linear-gradient(#000 calc(100% - 46px), #0000); }
+#lines span { position: relative; transition: opacity .4s; opacity: .36; }
+#lines span.next, #lines span.now { opacity: 1; }
+#glow { position: absolute; left: 0; top: 0; box-sizing: content-box; margin: -.02em -.16em; padding: .02em .16em; border-radius: .24em; background: color-mix(in oklab, var(--accent) 44%, transparent); box-shadow: 0 0 26px color-mix(in oklab, var(--accent) 26%, transparent); pointer-events: none; } #glow.cut { animation: lit .22s ease-out; } @keyframes lit { from { opacity: .25; } }
+#lines sup { color: var(--accent); font: 700 .5em/1 var(--sg); margin-left: .15em; transition: opacity .3s; } .bare #lines sup { opacity: 0; }
+#carry { margin: 0 0 22px; padding: 2px 0 2px 16px; border-left: 2px solid var(--accent); font: 400 15px/1.5 Literata, Georgia, serif; color: color-mix(in oklab, var(--ink) 80%, transparent); max-width: 46ch; transition: opacity .3s, border-color .3s, translate .4s var(--out); }
+#carry b { display: block; font: 650 10.5px/1.7 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; opacity: .75; }
+#carry span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+#carry.off { opacity: .2; border-color: color-mix(in oklab, var(--ink) 40%, transparent); translate: -6px 0; }   /* it steps back in its own place: nothing around it moves */
+/* size: a caliper in the margin, small letters below and large above */
+#size { position: absolute; left: 36px; top: 150px; height: 380px; width: 36px; touch-action: none; cursor: ns-resize; border-radius: 18px; }
+#size::before { content: ''; position: absolute; left: 17px; top: 0; bottom: 0; width: 2px; border-radius: 1px; background: linear-gradient(var(--accent) 0 0) bottom / 100% calc(var(--f) * 100%) no-repeat, color-mix(in oklab, var(--ink) 24%, transparent); transition: background-size .26s var(--glide); }
+#size i { position: absolute; left: 0; top: calc((1 - var(--f)) * 100%); width: 36px; height: 36px; margin-top: -18px; border-radius: 50%; background: var(--ink); color: var(--deep); display: grid; place-items: center; font: 600 calc(12px + 9px * var(--f))/1 Literata, serif; font-style: normal; box-shadow: 0 6px 18px #0007; transition: scale .25s var(--out), top .26s var(--glide); }
+#size.held::before, #rule.held::after { transition: none; } #size.held i { transition: scale .25s var(--out); } #rule.held i { transition: scale .25s var(--out); }
+#size.held i, #size:focus-visible i { scale: 1.16; } #size:focus-visible, #rule:focus-visible { outline: 0; } #size:focus-visible i { outline: 2px solid var(--accent); outline-offset: 3px; } #rule:focus-visible i { outline: 2px solid var(--ink); outline-offset: 3px; }
+#size b { position: absolute; left: 0; width: 36px; text-align: center; font: 500 13px/1 Literata, serif; opacity: .6; pointer-events: none; } #size b:first-of-type { top: -50px; font-size: 24px; } #size b:last-of-type { bottom: -44px; }
+#size output { position: absolute; left: -10px; right: -10px; top: -76px; text-align: center; font: 650 11px/1 var(--sg); font-stretch: 112%; letter-spacing: .06em; opacity: .75; }
+/* pace: words a minute on a ruler, and the light above obeys it */
+#tempo { margin: 0 -54px 0 -104px; padding: 30px 54px 34px 104px; background: linear-gradient(#0000, color-mix(in oklab, var(--deep) 62%, transparent)); display: grid; grid-template-columns: 1fr; }
+#tempo > output { white-space: nowrap; margin-bottom: 16px; font: 800 88px/.78 var(--sg); font-stretch: 50%; font-variant-numeric: tabular-nums; min-width: 1.75em; }
+#tempo > output small { font: 650 11px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; opacity: .7; margin-left: 10px; }
+#rule { position: relative; height: 54px; touch-action: none; cursor: ew-resize; border-radius: 8px; }
+#rule::before { content: ''; position: absolute; inset: auto 0 22px; height: 14px; background: repeating-linear-gradient(90deg, color-mix(in oklab, var(--ink) 46%, transparent) 0 1.5px, transparent 1.5px calc(100% / 48)); mask: linear-gradient(#000 0 0) bottom / 100% 5px no-repeat, repeating-linear-gradient(90deg, #000 0 1.5px, transparent 1.5px calc(100% / 8)); }
+#rule::after { content: ''; position: absolute; left: 0; bottom: 22px; height: 2px; width: calc(var(--f) * 100%); background: var(--accent); transition: width .26s var(--glide); }
+#rule i { position: absolute; left: calc(var(--f) * 100%); bottom: 14px; width: 4px; height: 36px; margin-left: -2px; border-radius: 2px; background: var(--accent); box-shadow: 0 0 18px var(--accent); transition: scale .25s var(--out), left .26s var(--glide); }
+#rule.held i, #rule:focus-visible i { scale: 1.7 1.1; }
+#rule em { position: absolute; bottom: 0; font: 650 10px/1 var(--sg); font-style: normal; opacity: .55; translate: -50% 0; } #rule em:first-of-type { translate: 0 0; } #rule em:last-of-type { translate: -100% 0; }
+#tempo p { margin: 10px 0 0; font-size: 14px; color: color-mix(in oklab, var(--ink) 78%, transparent); } #tempo p b { font-weight: 650; color: var(--accent); }
+/* the rest: keys that show on the page what they do */
+#keys { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.tog { position: relative; text-align: left; padding: 16px 52px 16px 62px; border-radius: 20px; background: var(--panel); transition: background .25s, scale .16s var(--out); }
+.tog:active { scale: .985; }
+.tog b { display: block; font-weight: 650; font-size: 15.5px; } .tog span { font-size: 13.5px; line-height: 1.35; display: block; color: color-mix(in oklab, var(--ink) 66%, transparent); }
+.tog::before { content: ''; position: absolute; left: 18px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%; box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--ink) 42%, transparent); transition: background .2s, box-shadow .2s, scale .35s var(--out); }
+.tog[aria-pressed=true] { background: color-mix(in oklab, var(--accent) 15%, var(--panel)); }
+.tog[aria-pressed=true]::before { background: var(--accent); box-shadow: 0 0 22px color-mix(in oklab, var(--accent) 60%, transparent); scale: .72; }
+.bars { position: absolute; right: 20px; top: 50%; translate: 0 -50%; display: flex; gap: 3px; align-items: flex-end; height: 22px; }
+.bars i { width: 3px; height: calc(5px + var(--h) * 9px); border-radius: 2px; background: var(--accent); opacity: .8; } [aria-pressed=false] .bars i { height: 3px; opacity: .4; }
+.bars.go i { animation: bar .5s var(--out); animation-delay: calc(var(--n) * 40ms); } @keyframes bar { 40% { height: calc(8px + var(--h) * 14px); opacity: 1; } }
+#voices { margin-top: 6px; padding: 20px 20px 18px; border-radius: 20px; background: var(--panel); min-height: 0; display: flex; flex-direction: column; flex: 1; }
+#voices .k { margin-bottom: 12px; line-height: 1.5; }
+#voices div { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+#voices button { height: 38px; padding: 0 15px 0 12px; border-radius: 19px; background: var(--soft); font-size: 13.5px; display: flex; align-items: center; gap: 9px; white-space: nowrap; transition: background .2s, color .2s, scale .16s var(--out); } #voices button:active { scale: .95; }
+#voices button::before { content: ''; border-left: 8px solid currentColor; border-block: 5.5px solid transparent; opacity: .7; }
+#voices button[aria-pressed=true] { background: var(--ink); color: var(--deep); font-weight: 650; }
+
+/* ---- Engines: two jobs, and a line to whoever does each ---- */
+#bay { position: relative; display: grid; grid-template-columns: minmax(250px, 360px) minmax(70px, 1fr) minmax(260px, 440px); align-items: start; padding: 6px 0 18px; max-width: 1000px; }
+#bay svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+#bay path { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; filter: drop-shadow(0 0 7px var(--accent)); stroke-dasharray: 1; animation: draw .6s var(--glide) both; transition: opacity .2s; } #bay path.gone { opacity: 0; }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+#bay .side { display: flex; flex-direction: column; gap: 12px; min-width: 0; } #bay .side + .side { grid-column: 3; } #bay .side > .k { margin-bottom: 2px; }
+.task, .eng { position: relative; text-align: left; padding: 16px 20px; border-radius: 20px; background: var(--soft); transition: background .25s, box-shadow .25s, opacity .25s, scale .16s var(--out); }
+.eng:active:not([aria-disabled=true]) { scale: .985; }
+.task .who { color: var(--ink); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 1px 0 3px; transition: color .25s; } .task.on .who { color: var(--accent); }
+.task > b, .eng > b { display: block; font-weight: 650; font-size: 15.5px; overflow-wrap: anywhere; padding-right: 58px; } .task > span, .eng > span { display: block; font-size: 13.5px; line-height: 1.4; color: color-mix(in oklab, var(--ink) 68%, transparent); }
+.task { cursor: pointer; } .task[aria-pressed=true] { box-shadow: inset 0 0 0 2px var(--accent); }
+.task::after, .eng::before { content: ''; position: absolute; top: 34px; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; background: var(--deep); box-shadow: 0 0 0 2px color-mix(in oklab, var(--ink) 46%, transparent); transition: background .25s, box-shadow .3s; }
+.task::after { right: -7px; } .eng::before { left: -7px; }
+.task.on::after, .eng.on::before { background: var(--accent); box-shadow: 0 0 0 2px var(--accent), 0 0 16px var(--accent); }
+.eng[aria-disabled=true] { opacity: .42; cursor: default; }
+.eng em { position: absolute; right: 18px; top: 18px; font: 650 10.5px/1 var(--sg); font-style: normal; font-stretch: 112%; letter-spacing: .08em; text-transform: uppercase; opacity: .62; }
+.task .with { display: flex; gap: 8px; margin-top: 12px; align-items: center; height: 36px; } .task .with small { font-size: 13.5px; color: color-mix(in oklab, var(--ink) 52%, transparent); } .task .with input { flex: 1 1 0; width: 0; min-width: 0; height: 36px; } .task .with .pill { height: 36px; }
+
+@media (max-width: 1000px) { #desk { grid-template-columns: 1fr; min-height: 0; } #leaf { min-height: 0; } #lines { flex: none; height: 330px; } }
+@media (max-width: 700px) {
+  body { display: block; }
+  #rail { position: sticky; top: 0; z-index: 5; height: auto; padding: 12px 14px 10px; flex-direction: row; align-items: center; gap: 14px; background: linear-gradient(color-mix(in oklab, var(--deep) 82%, #000) 80%, #0000); }
+  #rail .back { margin: 0; flex: none; font-size: 0; padding: 10px 4px; } #rail .back::before { font-size: 16px; }
+  #rooms { flex-direction: row; gap: 16px; overflow-x: auto; scrollbar-width: none; flex: 1; } #rooms button { font-size: 25px; white-space: nowrap; translate: none !important; }
+  #about { display: none; }
+  #room { padding: 8px 12px 90px; }
+  section.box { padding: 20px 18px 6px; border-radius: 20px; }
+  #leaf { padding: 22px 18px 0 66px; min-height: 0; border-radius: 20px; } #lines { font-size: calc(20px * var(--scale)); height: 300px; }
+  #size { left: 15px; top: 118px; height: 250px; } #size output { top: -74px; }
+  #tempo { margin: 0 -18px 0 -66px; padding: 22px 18px 24px; } #tempo > output { font-size: 66px; margin-bottom: 8px; }
+  #bay { display: flex; flex-direction: column; align-items: stretch; gap: 16px; } #bay svg, .task::after, .eng::before { display: none; }
+  .eng.on { background: color-mix(in oklab, var(--accent) 17%, transparent); box-shadow: inset 0 0 0 2px var(--accent); }
+}
+
+/* a room arrives: its panels rise into place one after another, once */
+@keyframes rise { from { opacity: 0; translate: 0 14px; } }
+#room.in > section.box, #room.in #leaf, #room.in #keys > * { animation: rise .5s var(--glide) both; }
+#room.in > :nth-child(2), #room.in #keys > :nth-child(1) { animation-delay: 45ms; } #room.in > :nth-child(3), #room.in #keys > :nth-child(2) { animation-delay: 90ms; }
+#room.in > :nth-child(n + 4), #room.in #keys > :nth-child(3) { animation-delay: 135ms; } #room.in #keys > :nth-child(n + 4) { animation-delay: 180ms; }
+#about { transition: opacity .3s; }
+/* what can be done with one thing: it opens from its button and closes back into it */
+#menu { position: fixed; inset: auto; margin: 0; border: 0; padding: 8px; min-width: 232px; max-width: min(330px, calc(100vw - 16px)); border-radius: 20px; background: color-mix(in oklab, var(--ink) 13%, var(--deep)); color: var(--ink); box-shadow: 0 20px 56px #000b, inset 0 0 0 1px var(--line);
+  transform-origin: 100% 0; opacity: 0; scale: .92; transition: opacity .14s, scale .14s ease-in, overlay .14s allow-discrete, display .14s allow-discrete; }
+#menu:popover-open { opacity: 1; scale: 1; transition: opacity .16s, scale .3s var(--glide), overlay .3s allow-discrete, display .3s allow-discrete; }
+@starting-style { #menu:popover-open { opacity: 0; scale: .92; } }
+#menu p { margin: 8px 12px 10px; font-size: 14px; line-height: 1.42; color: color-mix(in oklab, var(--ink) 80%, transparent); }
+#menu .pill { display: block; width: 100%; height: 44px; padding: 0 14px; border-radius: 13px; text-align: left; background: none; box-shadow: none; }
+#menu .pill:hover, #menu .pill:focus-visible { background: var(--soft); outline: 0; } #menu .pill.warn { color: #ffc2b8; }
+/* what Home says comes up from below and goes back down */
+#say { transition: opacity .2s, translate .36s var(--glide), display .36s allow-discrete; } #say[hidden] { display: none; opacity: 0; translate: -50% 16px; }
+@starting-style { #say { opacity: 0; translate: -50% 16px; } }
+@media (prefers-reduced-motion: reduce) { #room.in > *, #room.in #leaf, #room.in #keys > *, #bay path, #glow.cut { animation: none !important; } }

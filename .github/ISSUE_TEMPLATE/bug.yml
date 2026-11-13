@@ -1,0 +1,19 @@
+name: Something is broken
+description: The reader or the library does not behave as it should
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to see it
+      placeholder: "1. eastroom book.epub  2. open chapter 3  3. press Space"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: East Room version, browser and operating system
+      placeholder: "0.3.0, Firefox 144, macOS 26"

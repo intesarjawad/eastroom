@@ -1,0 +1,30 @@
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+.env
+.env.*
+.DS_Store
+node_modules/
+.playwright-cli/
+
+# what the CI and demo commands write
+/lib/
+/books/
+/site/
+
+# private working material: copyrighted test books, prototypes, research notes
+data/
+legacy/
+review/
+voices/
+journey/
+trials/
+app/
+docs/2026-*
+samples/*
+!samples/meditations.epub

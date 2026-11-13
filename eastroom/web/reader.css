@@ -1,0 +1,254 @@
+@font-face { font-family: Literata; src: url(fonts/Literata.woff2) format('woff2'); font-weight: 200 900; font-display: block; }
+@font-face { font-family: Literata; font-style: italic; src: url(fonts/LiterataItalic.woff2) format('woff2'); font-weight: 200 900; font-display: block; }
+@font-face { font-family: 'Science Gothic'; src: url(fonts/ScienceGothic.woff2) format('woff2'); font-weight: 100 900; font-stretch: 50% 200%; font-display: block; }
+/* the shelf of faces a spine may be set in, when its cover has been looked at (eastroom/letters.py). Fetched only when a book asks for one */
+@font-face { font-family: 'League Spartan'; src: url(fonts/LeagueSpartan.woff2) format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'EB Garamond'; src: url(fonts/EBGaramond.woff2) format('woff2'); font-weight: 400 800; font-display: swap; }
+@font-face { font-family: 'Playfair Display'; src: url(fonts/PlayfairDisplay.woff2) format('woff2'); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: 'Cinzel'; src: url(fonts/Cinzel.woff2) format('woff2'); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: 'Caveat'; src: url(fonts/Caveat.woff2) format('woff2'); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: 'Zilla Slab'; src: url(fonts/ZillaSlab.woff2) format('woff2'); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: 'UnifrakturCook'; src: url(fonts/UnifrakturCook.woff2) format('woff2'); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: 'Pinyon Script'; src: url(fonts/PinyonScript.woff2) format('woff2'); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: 'Special Elite'; src: url(fonts/SpecialElite.woff2) format('woff2'); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: 'Poiret One'; src: url(fonts/PoiretOne.woff2) format('woff2'); font-weight: 400 700; font-display: swap; }
+@property --m0 { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+@property --m1 { syntax: '<percentage>'; inherits: false; initial-value: 13%; }
+@property --m2 { syntax: '<percentage>'; inherits: false; initial-value: 82%; }
+@property --m3 { syntax: '<percentage>'; inherits: false; initial-value: 92.5%; }
+@property --r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:root { --ground: #530108; --deep: #250102; --ink: #e5f0fe; --accent: #91c1ff; --fs: 26px; --lh: 43px; --qfs: 22px; --qlh: 36px; --col: 700px; --spill: 0px;
+  --sg: 'Science Gothic', 'Arial Narrow', sans-serif; --out: cubic-bezier(.2, .9, .2, 1); color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; overflow: hidden; background: var(--ground); color: var(--ink); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+#world { position: fixed; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .35s; }
+#stage { position: fixed; inset: 0; overflow-y: auto; scrollbar-width: none; outline: none; transition: opacity .5s, scale .7s var(--out), --m0 .8s, --m1 .8s, --m2 .8s, --m3 .8s;
+  mask-image: linear-gradient(#0000 var(--m0), #000 var(--m1), #000 var(--m2), #0000 var(--m3)); }
+/* while the light leads, the text is a window round the line being read, not a full column */
+body.flow #stage { --m0: 7%; --m1: 27%; --m2: 66%; --m3: 90%; }
+#flow { position: relative; overflow-x: clip; }
+
+/* ---- the text: every part carries its own two colours ---- */
+.part { position: relative; --lit: var(--ink); --front: var(--accent); --on: var(--deep); --kept: var(--accent); --lead: color-mix(in oklab, var(--ink) 90%, var(--ground));
+  --read: color-mix(in oklab, var(--ink) 94%, var(--ground)); --unread: color-mix(in oklab, var(--ink) 44%, var(--ground)); --near: color-mix(in oklab, var(--ink) 64%, var(--ground)); }
+.blk.cur { --unread: var(--near); }                     /* the paragraph being read: what is still to come is one clear step brighter than the rest */
+.opener { height: 150vh; position: relative; }
+.col { width: var(--col); margin: 0 auto; padding-bottom: 46vh; font: 400 var(--fs)/var(--lh) Literata, Georgia, serif; font-optical-sizing: auto; }
+.blk { position: relative; margin: 0 0 calc(var(--lh) * 1.25); }
+.ln { position: relative; height: var(--lh); white-space: nowrap; color: var(--read); cursor: pointer; }
+.ln.gap { margin-top: calc(var(--lh) * .62); }            /* a stanza break */
+body:not(.flow) .blk .ln.now::before { content: ''; position: absolute; left: -22px; top: .34em; bottom: .34em; width: 3px; border-radius: 2px; background: var(--front); }   /* your place while you lead */
+body.flow .ln { color: var(--unread); }
+body.flow .ln.read { color: var(--read); }
+/* the line being read: read words lit, the word under the pointer in the room's dark, the rest waiting */
+body.flow .ln.now { color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(90deg, var(--lit) var(--x0, 0px), var(--on) var(--x0, 0px), var(--on) var(--x1, 0px), var(--lead) var(--x1, 0px), var(--unread) calc(var(--x1, 0px) + 210px)); }   /* the next few words are already brighter: the eye is led on */
+/* the lantern: a plate of light with its glow on the page and the trail it leaves over the words just read */
+#ptr, #ptr2 { position: absolute; left: 0; top: 0; z-index: 0; width: 0; border-radius: 8px; opacity: 0; pointer-events: none; will-change: transform, width; --pc: var(--accent); background: var(--pc);
+  box-shadow: 0 0 22px -3px color-mix(in oklab, var(--pc) 78%, transparent), 0 0 120px 4px color-mix(in oklab, var(--pc) 17%, transparent); }
+#ptr { transition: opacity .25s; }
+#ptr::before, #ptr2::before { content: ''; position: absolute; right: calc(100% - 8px); top: 0; bottom: 0; width: calc(var(--wk, 0px) + 8px); border-radius: 8px 0 0 8px; background: linear-gradient(90deg, #0000, color-mix(in oklab, var(--pc) 30%, transparent)); }
+body.flow #ptr { opacity: 1; }
+::highlight(kept) { color: var(--lit); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--kept) 55%, transparent); text-decoration-thickness: .34em; text-underline-offset: -.12em; text-decoration-skip-ink: none; }   /* a marker stroke low on the line: not a link, not a selection */
+
+.beat { height: auto; margin: calc(var(--lh) * 3.4) 0 calc(var(--lh) * 1.1); font: 800 96px/.86 var(--sg); font-stretch: 50%; font-variation-settings: 'wght' 900;
+  text-transform: uppercase; letter-spacing: -.012em; color: var(--accent); width: max-content;
+  mask-image: linear-gradient(100deg, #000 calc(var(--r) - 26%), #0000 var(--r)); transition: --r 1.15s cubic-bezier(.45, .05, .2, 1), color 1.1s .5s; }
+.stack { margin: calc(var(--lh) * 3.4) 0 calc(var(--lh) * 1.1); } .stack .beat { display: block; margin: 0 0 .1em; }   /* a long heading, in rows */
+.beat.in { --r: 130%; color: var(--ink); }                /* light sweeps the heading in, then it cools to ink */
+body.flow .beat { color: var(--near); }
+body.flow .beat.read { color: var(--ink); }
+body.flow .beat:is(.now, .read) { transition: --r 1.15s cubic-bezier(.45, .05, .2, 1), color .12s; }   /* the row just read is back at once: the slow cooling is for a heading's arrival only */
+
+.quote { --lit: var(--deep); --front: var(--ground); --on: var(--ink); --kept: var(--ground); --lead: color-mix(in oklab, var(--deep) 90%, var(--ink));
+  --read: color-mix(in oklab, var(--deep) 94%, var(--ink)); --unread: color-mix(in oklab, var(--deep) 46%, var(--ink)); --near: color-mix(in oklab, var(--deep) 66%, var(--ink));
+  width: max-content; max-width: calc(var(--col) + var(--spill)); margin: calc(var(--lh) * 1.6) 0 calc(var(--lh) * 2.2) var(--qin, 14%); padding: 46px 50px 38px;
+  border-radius: 30px; font: italic 400 var(--qfs)/var(--qlh) Literata, Georgia, serif; }
+.quote::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--ink); }   /* the sheet lies under the pointer, the words over it */
+.quote .ln { height: var(--qlh); }
+.quote cite { display: block; height: auto; white-space: normal; max-width: 34em; margin-top: 26px; font: 650 11.5px/1.5 var(--sg); font-stretch: 112%; letter-spacing: .09em; text-transform: uppercase; }
+
+/* ---- instruments ---- */
+#hud, #deck { position: fixed; left: 0; right: 0; z-index: 3; font-family: var(--sg); color: var(--ink); transition: color .8s; }
+#hud, #tools { transition: color .8s, opacity .6s; }
+body.idle #hud, body.idle #tools { opacity: .45; }                 /* while the light leads, the instruments step back until you reach for them */
+#hud { top: 0; display: flex; justify-content: space-between; align-items: start; padding: 24px 30px; pointer-events: none; }
+#count { display: grid; grid-template-columns: auto 1fr; justify-content: start; align-items: end; column-gap: 8px; overflow: clip; overflow-clip-margin: 8px; }
+#count b, #clock b { font: 800 92px/.78 var(--sg); font-stretch: 50%; font-variant-numeric: tabular-nums; display: block; transition: font-size .7s var(--out); }
+body.reading #count b, body.reading #clock b { font-size: 46px; }     /* poster scale on posters only */
+#count i { font: 500 15px/1 var(--sg); font-stretch: 75%; font-style: normal; opacity: .7; padding-bottom: 3px; }
+#count span, #clock span, #clock em { grid-column: 1 / -1; font: 650 12.5px/1.35 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; margin-top: 12px; font-style: normal; }
+#clock { display: grid; grid-template-columns: auto auto; justify-content: end; align-items: end; column-gap: 10px; text-align: left; }
+#count span { transition: opacity .5s; } body:not(.reading):not(.map) #count span { opacity: 0; }   /* on a poster the title is the poster */
+#clock span { grid-column: auto; margin: 0; padding-bottom: 2px; opacity: .8; }
+#clock em { color: var(--accent); text-align: right; transition: color .8s; }
+
+#deck { bottom: 0; display: flex; align-items: end; gap: 22px; padding: 0 30px 22px; }
+#play { position: relative; flex: none; width: 54px; height: 54px; border-radius: 50%; border: 1.5px solid currentColor; display: grid; place-items: center; transition: background .3s, color .3s, scale .2s; }
+#play:active { scale: .94; }
+#play::after { content: 'Space'; position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50%; font: 650 10.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase;
+  padding: 5px 7px; border: 1px solid color-mix(in oklab, currentColor 55%, transparent); border-radius: 4px; color: var(--ink); transition: opacity .3s; }
+#play[aria-pressed=true]::after { opacity: 0; }
+#play i { width: 16px; height: 18px; background: currentColor; translate: 2px 0; transition: clip-path .28s cubic-bezier(.3, 1.3, .5, 1), translate .28s;
+  clip-path: polygon(0 0, 50% 25%, 50% 25%, 100% 50%, 100% 50%, 50% 75%, 50% 75%, 0 100%); }
+#play[aria-pressed=true] { background: var(--ink); color: var(--ground); }
+#play[aria-pressed=true] i { translate: 0 0; clip-path: polygon(0 0, 36% 0, 36% 100%, 64% 100%, 64% 0, 100% 0, 100% 100%, 0 100%); }
+
+#ruler { flex: 1; min-width: 0; height: 54px; display: flex; align-items: end; gap: 2px; transition: opacity .4s; }
+.seg { display: block; flex: var(--w) 1 0; min-width: 2px; height: 34px; position: relative; transition: flex-grow .9s var(--out); }
+/* one quiet line: read parts lit, the rest waiting; a part shows its own two colours only when you reach for it */
+.seg::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; border-radius: 1.5px; background: color-mix(in oklab, var(--ink) 26%, transparent);
+  transition: height .4s cubic-bezier(.3, 1.4, .5, 1), background .25s, box-shadow .25s; }
+.seg.done::before { background: var(--ink); }
+#ruler.many { gap: 0; } #ruler.many .seg { min-width: 0; }   /* a book of hundreds of parts still fits its ruler */
+.seg:hover::before, .seg:focus-visible::before { height: 30px; background: var(--a); box-shadow: inset 0 -7px var(--g), 0 0 0 1px color-mix(in oklab, var(--deep) 60%, transparent); }
+.seg::after { content: attr(data-n) '  ' attr(data-t); position: absolute; bottom: calc(100% + 10px); left: 50%; translate: -50% 4px; white-space: nowrap; pointer-events: none; z-index: 1;
+  font: 650 11.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .09em; text-transform: uppercase; padding: 7px 9px; border-radius: 3px; background: var(--ink); color: var(--ground); opacity: 0; transition: opacity .15s, translate .15s; }
+.seg:hover::after { opacity: 1; translate: -50% 0; }
+.seg::after { max-width: min(72vw, 460px); overflow: hidden; text-overflow: ellipsis; }
+.seg:nth-child(-n+3)::after { left: 0; translate: 0 4px; } .seg:nth-child(-n+3):hover::after { translate: 0 0; }   /* a name never hangs off either edge of the window */
+.seg:nth-last-child(-n+6)::after { left: auto; right: 0; translate: 0 4px; } .seg:nth-last-child(-n+6):hover::after { translate: 0 0; }
+@media (hover: none) { .seg::after { content: none; } }
+.seg.here::before { display: none; }
+.seg.here { flex-grow: var(--open); height: 38px; background: color-mix(in oklab, var(--ink) 8%, transparent); border-bottom: 5px solid color-mix(in oklab, var(--ink) 30%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 30%, transparent); }
+.seg.here:hover::after { opacity: 0; }
+.seg > * { display: none; }
+.seg.here > * { display: block; position: absolute; }
+.fill { left: 0; bottom: -5px; height: 5px; width: calc(var(--p, 0) * 100%); background: var(--ink); border-radius: 2px 0 0 2px; }
+.needle { left: calc(var(--p, 0) * 100%); top: -8px; bottom: -5px; width: 2px; margin-left: -1px; background: var(--ink); box-shadow: 0 0 12px 2px var(--accent); }
+.tk { bottom: 0; left: calc(var(--at) * 100%); width: 1px; height: 100%; background: color-mix(in oklab, var(--ink) 55%, transparent); }
+.tk.key { width: 5px; height: 5px; margin-left: -2px; bottom: 9px; border-radius: 50%; background: none; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 60%, transparent); }
+.tk.key.on { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.spark { position: fixed; z-index: 4; left: 0; top: 0; width: 8px; height: 8px; margin: -4px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 16px 4px var(--accent); pointer-events: none; }
+
+#tools { flex: none; margin-left: auto; display: flex; align-items: center; gap: 20px; height: 54px; font: 650 12.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; }
+/* pace: a number over a tape of ticks (every 10, 50 and 100 wpm) that slides under a fixed needle */
+#pace { position: relative; flex: none; width: 176px; height: 54px; text-align: center; white-space: nowrap; cursor: ew-resize; touch-action: none; user-select: none; -webkit-user-select: none; border-radius: 6px; }
+#pace:active { cursor: grabbing; }
+#pace output { font: 800 34px/1 var(--sg); font-stretch: 50%; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+#pace > span { opacity: .7; margin-left: 6px; font-size: 10.5px; }
+#tape { position: absolute; left: 0; right: 0; bottom: 0; height: 16px; overflow: hidden; mask-image: linear-gradient(90deg, #0000, #000 28%, #000 72%, #0000); }
+#tape::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--accent); box-shadow: 0 0 9px 1px var(--accent); transition: background .8s; }
+#strip { position: absolute; left: 50%; bottom: 0; width: 721px; height: 100%; will-change: transform; opacity: .7; transition: opacity .25s; --t: color-mix(in oklab, currentColor 46%, transparent);
+  background: linear-gradient(90deg, currentColor 1px, #0000 1px) 0 100% / 80px 13px repeat-x, linear-gradient(90deg, currentColor 1px, #0000 1px) 0 100% / 40px 8px repeat-x, linear-gradient(90deg, var(--t) 1px, #0000 1px) 0 100% / 8px 4px repeat-x; }
+/* Voice is its own level meter: four bars that rise with the narrator, flat when she is silent */
+#pace:is(:hover, :focus-visible, :active) #strip { opacity: 1; }
+#voice i { display: inline-block; width: 14px; height: 12px; margin-right: 8px; vertical-align: -1px; --lv: inherit;
+  background: linear-gradient(currentColor 0 0) 0 100% / 2px calc(18% + var(--lv, 0) * 45%) no-repeat, linear-gradient(currentColor 0 0) 4px 100% / 2px calc(18% + var(--lv, 0) * 82%) no-repeat,
+    linear-gradient(currentColor 0 0) 8px 100% / 2px calc(18% + var(--lv, 0) * 60%) no-repeat, linear-gradient(currentColor 0 0) 12px 100% / 2px calc(18% + var(--lv, 0) * 30%) no-repeat; transition: background-size .09s linear; }
+#voice.over { opacity: .35; text-decoration: line-through; }       /* too fast for speech: the voice is out until you slow down */
+/* the book as a sheet of parts, the library as books on a shelf */
+#map::before { content: ''; display: inline-block; width: 13px; height: 9px; margin-right: 8px; background: radial-gradient(circle at 2px 2px, currentColor 1.5px, #0000 1.9px) 0 0 / 5px 5px; }
+#lib::before { content: ''; display: inline-block; width: 11px; height: 11px; margin-right: 8px; vertical-align: -1px;
+  background: linear-gradient(currentColor 0 0) 0 100% / 2.5px 100% no-repeat, linear-gradient(currentColor 0 0) 4.25px 100% / 2.5px 72% no-repeat, linear-gradient(currentColor 0 0) 8.5px 100% / 2.5px 100% no-repeat; }
+#tools > :is(button, a) { text-decoration: none; color: inherit; white-space: nowrap; padding: 10px 2px; font: inherit; letter-spacing: inherit; text-transform: inherit; border-bottom: 2px solid transparent; opacity: .6; transition: opacity .2s; }
+#tools > a:hover { opacity: 1; }
+#tools > button[aria-pressed=true] { opacity: 1; border-bottom-color: var(--accent); }
+
+/* ---- the book: every part as its own small poster on one sheet; the ruler's stripes fly up into them ---- */
+#book { position: fixed; inset: 128px 30px 96px; z-index: 2; display: grid; grid-template-columns: repeat(var(--cols, 8), 1fr); grid-auto-rows: var(--row, 120px); gap: 8px; align-content: safe center; overflow-y: auto; scrollbar-width: none; padding: 6px; margin: -6px; visibility: hidden; }
+body.map #book { visibility: visible; }
+body.map #stage { opacity: 0; scale: .92; pointer-events: none; }
+body.map #ruler { opacity: 0; pointer-events: none; }
+body.map #play, body.map #pace, body.map #voice, body.map #keep { visibility: hidden; }   /* from the sheet you can go into a part or back to the library; keeping a line belongs to the text */
+.card { position: relative; overflow: hidden; border-radius: 5px; text-align: left; color: var(--i); font-family: var(--sg); background: var(--g);
+  display: grid; grid-template-rows: 1fr auto; }
+/* the part's picture above, its own ground colour and title below; a part without a picture shows its two colours */
+.card::before { content: ''; grid-area: 1 / 1; background: radial-gradient(130% 120% at 12% 0%, var(--a), color-mix(in oklab, var(--a) 30%, var(--g)) 46%, var(--d)); }
+.card img { grid-area: 1 / 1; z-index: 1; width: 100%; height: 100%; min-height: 0; object-fit: cover; object-position: 50% 28%; transition: scale .9s var(--out); }
+.card b, .card i { grid-area: 1 / 1; z-index: 2; align-self: start; margin: 7px 8px; }
+.card b { justify-self: start; font: 800 26px/1 var(--sg); font-stretch: 50%; text-shadow: 0 1px 10px var(--d), 0 0 2px var(--d); }
+.card i { justify-self: end; padding: 4px 6px; border-radius: 3px; background: color-mix(in oklab, var(--d) 78%, transparent); font: 600 10.5px/1 var(--sg); font-style: normal; letter-spacing: .06em; text-transform: uppercase; }
+.card span { z-index: 2; min-height: 3.5em; padding: 11px 9px 0; border-bottom: 9px solid var(--g); font: 750 14px/1.04 var(--sg); font-stretch: 62%; text-transform: uppercase; letter-spacing: .01em;
+  background: linear-gradient(90deg, var(--i) calc(var(--p, 0) * 100%), var(--a) 0) top / 100% 3px no-repeat var(--g);   /* the rule over the title fills as the part is read */
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.card:not(.done):not(.here) { filter: saturate(.7) brightness(.74); }
+.card:not(.here) span { --p: 0; } .card.done span { --p: 1; }
+.card.here { outline: 2px solid var(--a); outline-offset: 3px; box-shadow: 0 0 44px -8px var(--a); }
+.card:focus-visible { outline: 2px solid var(--i); outline-offset: 3px; filter: none; }
+@media (hover: hover) { .card:hover { translate: 0 -4px; z-index: 3; filter: none; box-shadow: 0 18px 40px -16px #000; } .card:hover img { scale: 1.07; } }
+.card { transition: translate .35s var(--out), filter .3s, box-shadow .3s; }
+/* a part without a picture is a card of words: its number in its own accent, its title, and how it begins */
+.card:not(.pic) { grid-template: auto auto minmax(0, 1fr) / minmax(0, 1fr) auto; gap: 7px 10px; padding: 12px 14px 16px; align-content: start; }
+.card:not(.pic)::before { content: none; }
+.card:not(.pic) b { grid-area: 1 / 1; margin: 0; font-size: 34px; line-height: .8; color: var(--a); text-shadow: none; }
+.card:not(.pic) i { grid-area: 1 / 2; margin: 0; padding: 3px 0 0; background: none; color: color-mix(in oklab, var(--i) 74%, var(--g)); }
+.card:not(.pic) span { grid-area: 2 / 1 / 3 / 3; min-height: 0; padding: 0; border: 0; background: none; font-size: 18px; line-height: 1; -webkit-line-clamp: 2; }
+.card:not(.pic) p { grid-area: 3 / 1 / 4 / 3; margin: 0; align-self: start; max-height: 100%; overflow: hidden; font: 400 13px/1.38 Literata, Georgia, serif; color: color-mix(in oklab, var(--i) 70%, var(--g));
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.card:not(.pic)::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; --q: var(--p, 0); background: linear-gradient(90deg, var(--i) calc(var(--q) * 100%), color-mix(in oklab, var(--a) 55%, var(--g)) 0); }
+#book[data-list] .card { grid-template-rows: max-content max-content max-content; } #book[data-list] .card p { max-height: none; -webkit-line-clamp: 2; }
+.card:not(.pic):not(.here)::after { --q: 0; } .card:not(.pic).done::after { --q: 1; }
+
+@media (max-width: 899px) {
+  #hud { padding: 14px 16px; } #deck { padding: 0 16px 14px; gap: 12px; }
+  #count b, #clock b { font-size: 56px; } #clock span, #clock em { display: none; }
+  /* on a phone the tools are a row of their own over the play button and the ruler */
+  #deck { flex-wrap: wrap; row-gap: 4px; } #tools { order: -1; flex: 1 0 100%; margin: 0; height: 50px; justify-content: space-between; font-size: 11px; }
+  #tools { letter-spacing: .05em; gap: 10px; } #pace { width: 104px; height: 50px; } #pace output { font-size: 30px; } #pace > span { margin-left: 4px; font-size: 9.5px; } #tape { height: 13px; }
+  #map::before, #lib::before, #voice i { margin-right: 6px; }
+  @media (max-width: 520px) { #map::before, #lib::before { display: none; } #tools { gap: 6px; } }   /* five controls in one row on a phone: the two ornaments go */
+  #stage { --m0: 0%; --m1: 0%; --m2: 74%; --m3: 84%; mask-image: linear-gradient(#0000 0, #0000 104px, #000 190px, #000 var(--m2), #0000 var(--m3)); }   /* the text clears the part's name */
+  #tools > :is(button, a) { min-height: 44px; display: inline-flex; align-items: center; } #far, #note { bottom: 148px; }
+  .card:not(.pic) { padding: 11px 12px 15px; } .card:not(.pic) b { font-size: 28px; } .card:not(.pic) span { font-size: 16px; }
+  body.flow #stage { --m2: 60%; --m3: 83%; }
+  .quote { margin-left: 0; padding: 30px 24px 26px; border-radius: 22px; max-width: 100%; }
+  #ruler { gap: 1px; } .seg { flex: 1 1 0; min-width: 0; } .seg.here { flex: 60 1 0; } .tk.key { display: none !important; }
+  #book { inset: 92px 14px 138px; } body.map #count span { display: none; }
+}
+@media (hover: none) { #play::after { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition-duration: .01s !important; } }
+@media (forced-colors: active) { body.flow .ln.now { color: CanvasText; background: none; } }
+/* between the library and a book: each page ends on the frame the other begins with (the book's cover forward on its own ground), so the change of page is one short cross-fade */
+@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .26s; }
+#plate { position: fixed; inset: 0; z-index: 8; display: grid; place-items: center; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity .5s .08s, visibility 0s .6s; }
+#plate img { display: block; height: min(56vh, 520px); border-radius: 2px 5px 5px 2px; box-shadow: 0 44px 110px -26px #000; scale: 1.1; translate: 0 -26px; transition: scale .7s var(--out), translate .7s var(--out); }
+#plate img:not([src]) { display: none; }
+.arriving #plate { opacity: 1; visibility: visible; transition: none; }
+.arriving #plate img { scale: 1; translate: none; transition: none; }
+#hud, #deck { transition: color .8s, opacity .6s, translate .8s var(--out); }
+.arriving #stage { opacity: 0; scale: .97; } .arriving #hud { opacity: 0; translate: 0 -24px; } .arriving #deck { opacity: 0; translate: 0 24px; }
+body.leaving :is(#stage, #hud, #deck, #book) { opacity: 0 !important; transition: opacity .22s !important; }
+
+/* the reader's own kept lines: the same marker stroke as the author's key lines, in the part's accent */
+::highlight(mine) { color: var(--lit); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--accent) 62%, transparent); text-decoration-thickness: .34em; text-underline-offset: -.12em; text-decoration-skip-ink: none; }
+#far { position: fixed; z-index: 7; bottom: 104px; left: 50%; translate: -50%; padding: 12px 20px; border-radius: 22px; background: var(--ink); color: var(--deep); font: 650 12.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 14px 40px -12px #000; }
+#far:active { scale: .97; }
+#note { position: fixed; z-index: 7; bottom: 104px; left: 50%; translate: -50% 8px; max-width: min(92vw, 520px); padding: 12px 20px; border-radius: 22px; background: color-mix(in oklab, var(--deep) 86%, transparent); color: var(--ink); backdrop-filter: blur(14px);
+  font: 500 14px/1.35 Literata, serif; text-align: center; opacity: 0; pointer-events: none; transition: opacity .35s, translate .35s var(--out); }
+#note.on { opacity: 1; translate: -50% 0; }
+
+/* ---- what a book carries besides prose: its pictures, tables and notes, and what a part leaves you with ---- */
+.fig { margin: calc(var(--lh) * .4) 0 calc(var(--lh) * 1.25); }
+.fig .see { display: block; width: min(100%, calc(62vh * var(--ar, 1.4))); margin: 0 auto; padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 6px; overflow: hidden; box-shadow: 0 18px 50px #0006, 0 0 0 1px color-mix(in oklab, var(--ink) 14%, transparent); }
+.fig img { display: block; width: 100%; height: auto; background: color-mix(in oklab, var(--ink) 8%, transparent); }
+.fig figcaption { display: block; height: auto; white-space: normal; max-width: 38em; margin: 14px auto 0; text-align: center; font: 500 calc(var(--fs) * .62)/1.5 var(--sg); font-stretch: 100%; }
+.fig .scroll { overflow-x: auto; border-radius: 8px; box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent); }
+.fig table { border-collapse: collapse; min-width: 100%; font: 450 calc(var(--fs) * .64)/1.4 var(--sg); font-stretch: 100%; color: color-mix(in oklab, var(--ink) 88%, var(--ground)); }
+.fig th, .fig td { padding: 9px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid color-mix(in oklab, var(--ink) 12%, transparent); }
+.fig th { font-weight: 700; color: var(--ink); }
+.credit { margin: var(--lh) 0 0; max-width: 46em; font: 450 calc(var(--fs) * .5)/1.5 var(--sg); font-stretch: 100%; color: color-mix(in oklab, var(--ink) 58%, var(--ground)); }
+.credit a { color: inherit; text-decoration-color: color-mix(in oklab, var(--accent) 60%, transparent); text-underline-offset: 3px; }
+.credit a:hover, .credit a:focus-visible { color: var(--ink); }
+details.note { margin: calc(var(--lh) * -.9) 0 calc(var(--lh) * 1.1); font: 450 calc(var(--fs) * .66)/1.5 var(--sg); font-stretch: 100%; color: color-mix(in oklab, var(--ink) 74%, var(--ground)); }
+.quote details.note { margin: 12px 0 0; }
+details.note summary { display: inline-block; cursor: pointer; list-style: none; padding: 5px 11px; border-radius: 10px; font: 650 11px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent); }
+details.note summary::-webkit-details-marker { display: none; }
+details.note[open] summary { background: color-mix(in oklab, var(--accent) 18%, transparent); }
+details.note p { margin: 10px 0 0; max-width: 40em; padding-left: 14px; box-shadow: inset 2px 0 0 color-mix(in oklab, var(--accent) 60%, transparent); }
+.carry { width: var(--col); max-width: calc(100vw - 40px); margin: calc(var(--lh) * 1.5) auto calc(var(--lh) * 2.5); padding-top: calc(var(--lh) * .8); border-top: 1px solid color-mix(in oklab, var(--ink) 20%, transparent); }
+.carry h3 { margin: 0 0 12px; font: 650 11.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.carry ul { margin: 0 0 calc(var(--lh) * .8); padding: 0; list-style: none; }
+.carry li { margin: 0 0 14px; padding-left: 18px; font: 400 calc(var(--fs) * .78)/1.5 Literata, Georgia, serif; color: color-mix(in oklab, var(--ink) 90%, var(--ground)); box-shadow: inset 2px 0 0 color-mix(in oklab, var(--ink) 26%, transparent); text-wrap: pretty; }
+.carry .yours li { box-shadow: inset 2px 0 0 var(--accent); }
+.carry a { font: 650 11.5px/1 var(--sg); font-stretch: 112%; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); opacity: .75; }
+#lens { max-width: 96vw; max-height: 96vh; padding: 0; border: 0; background: none; cursor: zoom-out; }
+#lens::backdrop { background: #000d; }
+#lens img { display: block; max-width: 96vw; max-height: 96vh; border-radius: 6px; }

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#120a08">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>East Room: reading is light</title>
+<link rel="stylesheet" href="reader.css">
+<script>/* before the first paint: the colours you were last in, and the cover that is on its way from the library */
+try { var R = document.documentElement, w = JSON.parse(localStorage.getItem('eastroom:w')), o = JSON.parse(sessionStorage.getItem('eastroom:open'));
+  if (o && Date.now() - o.t < 9000 && o.w) { w = o.w; R.classList.add('arriving'); setTimeout(function () { R.classList.remove('arriving'); }, 5000); }   /* whatever happens, the page shows */
+  for (var k in w) R.style.setProperty('--' + k, w[k]); } catch (e) {}</script>
+<canvas id="world" aria-hidden="true"></canvas>
+<div id="plate" aria-hidden="true"><img alt=""></div>
+<script>try { if (o && o.cover && R.classList.contains('arriving')) document.querySelector('#plate img').src = o.cover; } catch (e) {}</script>
+<main id="stage" tabindex="0" aria-label="The text"><div id="flow"></div></main>
+<div id="book" role="group" aria-label="The book, every part"></div>
+<header id="hud">
+  <div id="count"><b>00</b><i></i><span></span></div>
+  <div id="clock"><b>0</b><span>min left<br>in this part</span><em></em></div>
+</header>
+<footer id="deck">
+  <button id="play" aria-pressed="false" aria-label="Flow: the light leads, you follow (Space)"><i></i></button>
+  <nav id="ruler" aria-label="The book, part by part"></nav>
+  <div id="tools">
+    <div id="pace" role="slider" tabindex="0" aria-label="Pace in words per minute. Drag, flick or use the arrow keys." aria-valuemin="100" aria-valuemax="1000" aria-valuenow="250">
+      <output id="wpm">250</output><span>wpm</span>
+      <div id="tape" aria-hidden="true"><div id="strip"></div></div>
+    </div>
+    <button id="voice" aria-pressed="true"><i></i>Voice</button>
+    <button id="keep" aria-label="Keep this line (K)">Keep</button>
+    <button id="map" aria-pressed="false">Book</button>
+    <a id="lib" href="./">Library</a>
+  </div>
+</footer>
+<audio id="narrator" preload="none"></audio>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/lenis.min.js"></script>
+<script type="module" src="reader.js"></script>
+</html>

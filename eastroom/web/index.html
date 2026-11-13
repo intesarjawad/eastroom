@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#120a08">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Library · East Room</title>
+<link rel="preload" as="image" href="room/walnut.webp"><link rel="preload" as="image" href="room/post.webp"><link rel="preload" as="image" href="room/marble.webp"><link rel="preload" as="image" href="room/gilt.webp">
+<link rel="preload" as="fetch" href="api/library" crossorigin>
+<link rel="stylesheet" href="reader.css">
+<link rel="stylesheet" href="library.css">
+<script>/* the room is shown whole or not at all: it stays dark until every part of the case can be drawn (library.js lifts this) */
+document.documentElement.classList.add('wait'); setTimeout(function () { document.documentElement.classList.remove('wait'); }, 4000);</script>
+<header id="bar">
+  <h1><b id="n">0</b><span id="of">books</span></h1>
+  <label id="find"><span class="sr">Search your books</span><input id="q" type="search" placeholder="Search your books" autocomplete="off" spellcheck="false"><kbd>/</kbd></label>
+  <div id="side"><nav id="go" popover aria-label="Other rooms"><a href="ideas.html">Ideas</a><a href="settings.html">Settings</a><p id="home" role="status" hidden></p></nav><button id="add" aria-label="Add books"><i></i>Add books</button><button id="more" class="round" popovertarget="go" aria-label="Ideas, settings and Home"></button></div>
+</header>
+<main id="page">
+  <section id="hero" aria-label="Continue reading"></section>
+  <div id="field" role="list" aria-label="Your books. Arrow keys move, Enter reads, Space shows details."></div>
+  <p id="none" hidden></p>
+</main>
+<nav id="rail" aria-label="Jump to a letter"></nav>
+<footer id="dock" aria-label="Arrange the library">
+  <div id="tabs" role="group" aria-label="Show"></div>
+  <div id="arr" popover>
+    <div id="order" role="group" aria-label="Order"></div>
+    <div id="view" role="group" aria-label="View">
+      <button data-v="shelf" aria-label="Shelves of books"><i class="g"></i><span>Shelves</span></button>
+      <button data-v="index" aria-label="List of titles"><i class="l"></i><span>List</span></button>
+    </div>
+    <div id="size" role="group" aria-label="Cover size">
+      <button data-d="-1" aria-label="Smaller covers (-)">−</button><button data-d="1" aria-label="Larger covers (+)">+</button>
+    </div>
+  </div>
+  <button id="sort" class="round" popovertarget="arr" aria-label="Order and view"></button>
+</footer>
+<aside id="bench" aria-live="polite" aria-label="Books being added" hidden></aside>
+<div id="drop" hidden><b>Drop to add</b><span>EPUB, PDF, comics (CBZ) and text files. Home reads them and every device gets the book.</span></div>
+<input id="files" type="file" multiple hidden accept=".epub,.pdf,.cbz,.txt,.md,application/epub+zip,application/pdf">
+<script src="vendor/gsap.min.js"></script>
+<script type="module" src="library.js"></script>
+</html>
