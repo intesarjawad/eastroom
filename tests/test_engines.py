@@ -295,6 +295,20 @@ class Tools(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.recipe("agy", (b"\xff\xd8..",))
 
+    def test_what_a_tool_said_never_reaches_the_note_a_page_can_read(self):
+        ran = mock.MagicMock(pid=1)
+        ran.__enter__.return_value = ran
+        ran.communicate.return_value = ("SECRET from a file", "")
+        with (
+            mock.patch.object(engines.shutil, "which", return_value="/bin/codex"),
+            mock.patch.object(engines.subprocess, "Popen", return_value=ran),
+            mock.patch.object(engines, "with_group"),
+            mock.patch.object(engines.sys, "stderr"),
+            self.assertRaises(RuntimeError) as failed,
+        ):
+            engines._tool("codex", "m1", "x", (), None, 5)
+        self.assertNotIn("SECRET", str(failed.exception))
+
 
 if __name__ == "__main__":
     unittest.main()

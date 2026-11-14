@@ -444,9 +444,14 @@ def _tool(
             )  # helpers a tool leaves running end with the question
         said = read(name, out[:MAX_ANSWER], Path(tmp))
         if said is None:
+            # A book can talk a tool into reading a file, and anyone who reaches Home can read a
+            # job's note. What the tool said stays on Home's own terminal.
+            print(
+                f"{TOOLS[name][0]} said: {(err or out).strip()[-200:] or 'nothing'}",
+                file=sys.stderr,
+            )
             raise RuntimeError(
-                f"{TOOLS[name][0]} gave no usable answer."
-                f" It said: {(err or out).strip()[-200:] or 'nothing'}"
+                f"{TOOLS[name][0]} gave no usable answer. Home's log has what it said."
             )
         return said
 

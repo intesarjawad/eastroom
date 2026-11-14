@@ -296,6 +296,8 @@ class Queue(Shelf):
         for args in (("nope", "takeaways"), (self.slug, "rm"), (self.slug, "voice", "loud")):
             with self.assertRaises(ValueError):
                 shop.add(*args)
+        with self.assertRaises(ValueError):
+            shop.add_all("rm")
 
     def test_a_step_made_by_an_older_version_is_shown_as_improvable(self):
         work.note(self.book, "takeaways", state="done")

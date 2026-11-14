@@ -442,6 +442,8 @@ class Workshop:
         return job
 
     def add_all(self, step: str, arg: str = "", only_missing: bool = True) -> int:
+        if step not in STEPS:
+            raise ValueError("No such step or book.")
         count = 0
         for info in overview(self.library):
             have = (
