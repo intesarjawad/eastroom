@@ -5,7 +5,9 @@
 const sy = window.speechSynthesis; let cur = null, woken = false, cancelled = -1e9;
 export const canSpeak = !!sy, RATE = 180;                         // words a minute at rate 1, near enough for the built-in voices
 export const ready = () => performance.now() - cancelled > 150;   // a sentence queued right after a cancel loses its events on iOS
-export function wake() { if (!sy || woken) return; woken = true; const u = new SpeechSynthesisUtterance(' '); u.volume = 0; sy.speak(u); }
+// A phone drops, without a word, anything asked to speak before a touch has ended on the page. So the waking is tried at
+// every touch until the voice has in fact spoken once.
+export function wake() { if (!sy || woken || sy.speaking || sy.pending) return; const u = new SpeechSynthesisUtterance(' '); u.volume = 0; u.onstart = u.onend = () => { woken = true; }; sy.speak(u); }
 export function hush() { cur = null; if (sy && (sy.speaking || sy.pending)) { sy.cancel(); cancelled = performance.now(); } }
 export function speak(words, wpm, on) {                           // on.start(), on.word(i), on.end(), on.fail()
   const starts = []; let at = 0; for (const w of words) { starts.push(at); at += w.length + 1; }

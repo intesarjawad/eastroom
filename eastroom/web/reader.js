@@ -359,11 +359,11 @@ function advance(dt) {
     if (!voice.paused) voice.pause(); S.playing = false;
     const sp = S.say;
     if (!sp || S.g < sp.a || S.g > sp.b) {                        // speak from the reading point to the end of its sentence
-      if (!ready()) return; const a = S.g, b = sentence(a)[1], me = S.say = { a, b, started: 0, words: false, over: false }; S.f = 0;
+      if (!ready()) return; const a = S.g, b = sentence(a)[1], me = S.say = { a, b, asked: performance.now(), started: 0, words: false, over: false }; S.f = 0;
       speak(W.slice(a, b + 1).map((x) => x.s), S.wpm, { start() { me.started = performance.now(); }, word(i) { if (S.say === me) { me.words = true; S.g = Math.min(b, a + i); S.f = 0; } },
         end() { me.over = true; }, fail() { if (S.say === me) { S.say = null; S.mute = true; } } });   // not allowed to speak yet: the light leads alone until the next touch
     } else if (sp.over) { if (sp.b < W.length - 1) { S.g = sp.b + 1; S.f = 0; S.say = null; } else if (lastPart()) { S.say = null; setFlow(false); done(parts.at(-1)); } else S.f = 1; }
-    else if (!sp.started) S.f = 0;                                // the voice has not begun: the light waits for it
+    else if (!sp.started) { S.f = 0; if (performance.now() - sp.asked > 4000) { quiet(); S.mute = true; } }   // the voice has not begun: the light waits for it, but not for ever. A phone that refuses to speak says nothing, so after four seconds the light leads alone until the next touch
     else if (sp.words) S.f = Math.min(1, S.f + (dt * 1000) / dur(w));   // between two reported words the light glides
     else if (performance.now() - sp.started > 350) { S.f += (dt * 1000) / dur(w); if (S.f >= 1) { if (S.g < sp.b) { S.g++; S.f = 0; } else S.f = 1; } }   // this device reports no words: move by pace and wait for the sentence to end
   } else {
@@ -488,7 +488,8 @@ function frame(time, dms) {
 addEventListener('wheel', () => { S.touched = true; S.flowing && setFlow(false); }, { passive: true });
 addEventListener('touchmove', (e) => { S.touched = true; S.flowing && !e.target.closest?.('#deck') && setFlow(false); }, { passive: true });
 addEventListener('pointermove', (e) => { S.ptr = [e.clientX, e.clientY]; S.ptrAt = gsap.ticker.time; });
-addEventListener('pointerdown', () => { S.touched = true; S.blocked = S.mute = false; wake(); });
+addEventListener('pointerdown', () => { S.touched = true; });
+for (const k of ['pointerup', 'click']) addEventListener(k, () => { S.blocked = S.mute = false; wake(); }, true);   // a phone lets a page speak only once a finger has lifted: a touch that has only landed does not count
 voice.addEventListener('error', () => {                            // a recording that cannot be fetched (Home asleep, not held here): this part falls back to the device's voice
   const p = W[S.g]?.part; if (!p || !S.src) return; p.lost = true; for (let g = p.g0; g < p.g1; g++) W[g].time = null; S.playing = false; S.src = ''; if (p === S.part) { S.part = null; }
 });
