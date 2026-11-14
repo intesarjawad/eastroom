@@ -34,7 +34,7 @@ dev = [
   "ruff==0.17.5",
   "pyright==1.1.414",
   "pillow>=11",  # tools/: the icons and the room's pictures
-  "numpy>=2,<2.3",  # later stubs need Python 3.12, and the checks run at 3.11
+  "numpy>=2,<2.5",  # later stubs need Python 3.12, and the checks run at 3.11
 ]
 
 [build-system]
