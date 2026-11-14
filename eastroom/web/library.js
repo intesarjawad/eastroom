@@ -327,7 +327,7 @@ function homeLine() {                                             // the network
 }
 $('#add').onclick = () => $('#files').click(); $('#files').onchange = (e) => { for (const f of e.target.files) add(f); e.target.value = ''; };
 let over = 0; const drop = $('#drop');
-met.then(() => { if (rec.home.none) drop.lastChild.textContent = 'EPUB, comics (CBZ) and text files. This browser reads them itself and keeps them: nothing is sent anywhere.'; });
+met.then(() => { $('#star').hidden = !rec.home.none; if (rec.home.none) drop.lastChild.textContent = 'EPUB, comics (CBZ) and text files. This browser reads them itself and keeps them: nothing is sent anywhere.'; });
 addEventListener('dragenter', (e) => { if (![...(e.dataTransfer?.types || [])].includes('Files')) return; over++; drop.hidden = false; });
 addEventListener('dragleave', () => { if (--over <= 0) { over = 0; drop.hidden = true; } });
 addEventListener('dragover', (e) => e.preventDefault());
