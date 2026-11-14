@@ -3,9 +3,9 @@
     python tools/demo_pictures.py LIBRARY
 
 The pictures step of the workshop asks the owner's AI tool to name a picture for each part. The
-demo is built on a machine that has no such tool, so the names it gave on mine for The Odyssey
-are kept in tools/demo-pictures.json, by part number, and handed to the same step here. The
-search on Wikimedia Commons, the licence check and the colours are the real ones.
+demo is built on a machine that has no such tool, so what the step settled on when I ran it
+is kept in tools/demo-pictures.json, by book and part number, and handed to the same step
+here. The search on Wikimedia Commons, the licence check and the colours are the real ones.
 """
 
 from __future__ import annotations
